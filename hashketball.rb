@@ -117,93 +117,81 @@ def game_hash
 end
 
 def num_points_scored(player)
-    if game_hash[:home][:players].include?("#{player}")
-      return game_hash[:home][:players]["#{player}"][:points]
-    elsif game_hash[:away][:players].include?("#{player}")
-      return game_hash[:away][:players]["#{player}"][:points]
+  game_hash.each do |key, value|
+    value[:players].each do |k, v|
+      if k == player
+        return v[:points]
+      end
     end
+  end
 end
 
 def shoe_size(player)
-  if game_hash[:home][:players].include?("#{player}")
-    return game_hash[:home][:players]["#{player}"][:shoe]
-  elsif game_hash[:away][:players].include?("#{player}")
-    return game_hash[:away][:players]["#{player}"][:shoe]
+  game_hash.each do |key, value|
+    value[:players].each do |k, v|
+      if k == player
+        return v[:shoe]
+      end
+    end
   end
 end
 
 def team_colors(team)
-  if game_hash[:home][:team_name] == team
-    return game_hash[:home][:colors]
-  elsif game_hash[:away][:team_name] == team
-    return game_hash[:away][:colors]
+  game_hash.each do |key, value|
+    if value[:team_name] == team
+      return value[:colors]
+    end
   end
 end
 
 def team_names
   teams = []
-  teams << game_hash[:home][:team_name]
-  teams << game_hash[:away][:team_name]
+
+  game_hash.each do |key, value|
+    teams << value[:team_name]
+  end
   return teams
 end
 
 def player_numbers(team_name)
   team_numbers = []
 
-  if game_hash[:home][:team_name] == team_name
-    game_hash[:home][:players].each do |player, number|
-      team_numbers << game_hash[:home][:players]["#{player}"][:number]
-    end
-    elsif game_hash[:away][:team_name] == team_name
-      game_hash[:away][:players].each do |player, number|
-        team_numbers << game_hash[:away][:players]["#{player}"][:number]
+  game_hash.each do |key, value|
+    if value[:team_name] == team_name
+      value[:players].each do |k, v|
+          team_numbers << v[:number]
       end
     end
-  sorted_team_numbers = team_numbers.sort
-  return sorted_team_numbers
+  end
+  return team_numbers
 end
 
 def player_stats(player)
-  if game_hash[:home][:players].include?("#{player}")
-    return game_hash[:home][:players]["#{player}"]
-  elsif game_hash[:away][:players].include?("#{player}")
-    return game_hash[:away][:players]["#{player}"]
+  game_hash.each do |key, value|
+    value[:players].each do |k, v|
+      if k == player
+        return v
+      end
+    end
   end
 end
 
 def big_shoe_rebounds
-  nets_shoe_sizes = []
-  hornets_shoe_sizes = []
-  biggest_shoe = []
+  shoe_sizes = []
 
-  game_hash[:home][:players].each do |player, shoe|
-    nets_shoe_sizes << game_hash[:home][:players]["#{player}"][:shoe]
-  end
-
-  game_hash[:away][:players].each do |player, shoe|
-    hornets_shoe_sizes << game_hash[:away][:players]["#{player}"][:shoe]
-  end
-  sorted_nets_shoes = nets_shoe_sizes.sort
-  sorted_hornets_sizes = hornets_shoe_sizes.sort
-
-  biggest_nets_shoe = sorted_nets_shoes.last
-  biggest_hornets_shoe = sorted_hornets_sizes.last
-
-  if biggest_nets_shoe > biggest_hornets_shoe
-    biggest_shoe = biggest_nets_shoe
-  elsif biggest_nets_shoe < biggest_hornets_shoe
-    biggest_shoe = biggest_hornets_shoe
-  end
-
-  game_hash[:home][:players].each do |player, shoe|
-    if game_hash[:home][:players]["#{player}"][:shoe] == biggest_shoe
-      return game_hash[:home][:players]["#{player}"][:rebounds]
+  game_hash.each do |key, value|
+    value[:players].each do |k, v|
+      shoe_sizes << v[:shoe]
     end
   end
 
-  game_hash[:away][:players].each do |player, shoe|
-    if game_hash[:away][:players]["#{player}"][:shoe] == biggest_shoe
-      return game_hash[:away][:players]["#{player}"][:rebounds]
+  shoe_sizes = shoe_sizes.sort.last
+
+  game_hash.each do |key, value|
+    value[:players].each do |k, v|
+      if v[:shoe] == shoe_sizes
+        return v[:rebounds]
+      end
     end
   end
 end
