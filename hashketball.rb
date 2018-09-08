@@ -172,6 +172,8 @@ def player_stats(player)
 end
 
 def big_shoe_rebounds
+  require "pry"
+  binding.pry
   nets_shoe_sizes = []
   hornets_shoe_sizes = []
   biggest_shoe = []
